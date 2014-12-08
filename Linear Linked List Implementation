@@ -1,0 +1,153 @@
+// DS_Linked_1.cpp : Defines the entry point for the console application.
+// Implement a Linear Linked LIst
+// a. append element
+// b. remove duplicate element 
+
+#include "stdafx.h"
+#include<iostream>
+#include<stdio.h>
+#include<conio.h>
+#include<time.h>
+using namespace std;
+
+
+struct node
+{
+	int data;
+	node *link;
+};
+node *head1=NULL;
+node *head2=NULL;
+
+void InsertNodeAtEnd(node *&head, int thing)
+{
+	node *p;
+	p=new node;
+	p->data=thing;
+	if(head==NULL)
+	{
+		head=p;
+		p->link=NULL;
+	}
+	else
+	{
+		node *temp=head;
+
+		while(temp->link!=NULL)
+		{
+			temp=temp->link;
+		}
+		temp->link=p;
+		p->link=NULL;
+
+	}
+
+}
+
+void ShowLinkedList(node *head)
+{
+	node *temp=head;
+
+	if(temp==NULL)
+		cout<<"Linked List Empty!";
+	while(temp!=NULL)
+	{
+		cout<<temp->data<<"\t";
+		temp=temp->link;
+	}
+}
+
+
+void removeDuplicates(node *&head)
+{
+	node *q=head;
+	node *temp=head;
+	node *prev;
+
+	while(q->link!=NULL)
+	{
+		temp=q->link;
+		prev=q;
+		while(temp!=NULL)
+		{
+			if(temp->data == q->data)
+			{
+				// Duplicate found
+				prev->link=temp->link;
+				delete temp;
+				temp=prev->link;
+				continue;
+
+			}
+			prev=temp;
+			temp=temp->link;
+		} 
+		q=q->link;
+
+	}
+	
+	
+
+}
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	srand(time(NULL));
+
+	
+	
+	for(int i=0;i<5;i++)
+		InsertNodeAtEnd(head1,rand()%100);
+	
+label:
+	system("cls");
+	
+	cout<<"What operation do you want to perform:"<<endl;
+	cout<<"1. Append an Element to the end of the list. "<<endl;
+	cout<<"2. Remove duplicate elements from the Linked List."<<endl;
+	cout<<"3. Show Linked List. "<<endl;
+	cout<<"4. Exit"<<endl;
+	cout<<"Enter your choice (1-4)"<<endl;
+	int  ch;
+	cin>>ch;
+
+	switch(ch)
+	{
+	case 1: 
+		system("cls");
+		cout<<"What element do you want to append? ";
+		int x;
+		cin>>x;
+		InsertNodeAtEnd(head1,x);
+		cout<<"Insert successful, Press enter to go back to the main menu.";
+		_getch();
+		goto label;
+	case 2:
+		removeDuplicates(head1);
+		system("cls");
+		cout<<"Duplicates removed successfully. Press enter to go back to the main menu. ";
+		_getch();
+		goto label;
+
+	case 3:
+		system("cls");
+		ShowLinkedList(head1);
+		cout<<endl<<endl<<"Press enter to go back to the main menu. ";
+		_getch();
+		goto label;
+
+	case 4:
+		exit(0);
+	default:
+		cout<<"****INVALID CHOICE**** Press enter to try again..";
+		_getch();
+		goto label;
+	}
+	
+
+	
+	_getch();
+	return 0;
+}
+
