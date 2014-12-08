@@ -1,0 +1,102 @@
+// DS_LL_Search.cpp : Defines the entry point for the console application.
+// Perform a search in a linear linked lists
+
+
+#include "stdafx.h"
+#include<iostream>
+#include<stdio.h>
+#include<conio.h>
+#include<time.h>
+using namespace std;
+
+
+struct node
+{
+	int data;
+	node *link;
+};
+node *head1=NULL;
+node *head2=NULL;
+
+void InsertNodeAtEnd(node *&head, int thing)
+{
+	node *p;
+	p=new node;
+	p->data=thing;
+	if(head==NULL)
+	{
+		head=p;
+		p->link=NULL;
+	}
+	else
+	{
+		node *temp=head;
+
+		while(temp->link!=NULL)
+		{
+			temp=temp->link;
+		}
+		temp->link=p;
+		p->link=NULL;
+
+	}
+
+}
+
+void ShowLinkedList(node *head)
+{
+	node *temp=head;
+
+	if(temp==NULL)
+		cout<<"Linked List Empty!";
+	while(temp!=NULL)
+	{
+		cout<<temp->data<<"\t";
+		temp=temp->link;
+	}
+}
+
+node* Search(node *head,int thing)
+{
+	node *temp=head;
+	while(temp!=NULL)
+	{
+		if(temp->data==thing)
+			return temp;
+		temp=temp->link;
+	}
+	return NULL;
+}
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	char choice='y';
+	int data;
+
+	while(choice=='y' || choice=='Y')
+	{
+		cout<<"What element you want to insert in the list? ";
+		cin>>data;
+		InsertNodeAtEnd(head1,data);
+		cout<<"Insert Successful. Want to enter more? (y/n): ";
+		cin>>choice;
+
+	}
+
+	int item;
+	cout<<"What element you want to search? ";
+	cin>>item;
+
+	node *n=Search(head1,item);
+
+	if(n==NULL)
+		cout<<"Item not found!";
+	else
+		cout<<"Item found!";
+	
+
+	_getch();
+	return 0;
+}
+
