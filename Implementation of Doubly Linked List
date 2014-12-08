@@ -1,0 +1,135 @@
+// DS_DoublyLL_1.cpp : Defines the entry point for the console application.
+// Implement a doubly Linked List
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+using namespace std;
+
+
+struct list
+{
+	int data;
+	list *next;
+	list *previous;
+};
+
+list *head;
+
+void InsertlistAtEnd(list *&head,int thing)
+{
+	list *p;
+	p=new list;
+	p->data=thing;
+
+	if(head==NULL)
+	{
+		head=p;
+		head->next=NULL;
+		head->previous=NULL;
+	}
+	else
+	{
+		list *temp=head;
+		while(temp->next!=NULL)
+		{
+			temp=temp->next;
+		}
+		temp->next=p;
+		p->previous=temp;
+		p->next=NULL;
+	}
+}
+
+void DisplayLL(list *head)
+{
+	list *temp=head;
+
+	while(temp->next!=NULL)
+	{
+		cout<<temp->data<<" <--> ";
+		temp=temp->next;
+	}
+	cout<<temp->data;
+}
+
+//  More generalized method that deletes every other list starting from a given list p
+
+void DeleteEveryOtherlist(list *&head,list *p)
+{
+	if(p==NULL)
+	{
+		cout<<"Oops! Something went wrong. Is your input correct?";
+		return;
+	}
+
+	
+
+	if(p==head)
+	{
+		head=p->next;
+		free(p);
+		p=head->next;
+
+	}
+
+	list *temp=p->previous;
+	
+	while(p!=NULL )
+	{
+		if(p->next==NULL)
+		{
+			temp->next=NULL;
+			break;
+		}
+
+
+		temp->next=p->next;
+		free(p);
+		p=temp->next;
+		p->previous=temp;
+		temp=p;
+		p=p->next;
+
+
+
+
+	}
+}
+
+		
+
+
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+
+	char choice='y';
+	int data;
+
+	while(choice=='y' || choice=='Y')
+	{
+		cout<<"What element you want to insert in the list? ";
+		cin>>data;
+		InsertlistAtEnd(head,data);
+		cout<<"Insert Successful. Want to enter more? (y/n): ";
+		cin>>choice;
+
+	}
+
+	system("cls");
+	cout<<"Before deleting the list looks like: "<<endl;
+	DisplayLL(head);
+
+	DeleteEveryOtherlist(head,head);
+
+	cout<<endl<<"After deleting every other list, the list is: "<<endl;
+	DisplayLL(head);
+	_getch();
+	return 0;
+}
+
