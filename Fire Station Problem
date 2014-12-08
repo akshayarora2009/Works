@@ -1,0 +1,371 @@
+/*
+Question
+
+A city is served by a number of ﬁre stations. 
+Residents have complained that the distance between certain houses and the nearest station is too far, 
+so a new station is to be built. You are to choose the location of the new station so as to reduce the distance
+to the nearest station from the houses of the poorest-served residents. The city has up to 500 intersections, 
+connected by road segments of various lengths. No more than 20 road segments intersect at a given intersection.
+The locations of houses and ﬁre stations alike are considered to be at intersections. Furthermore, we assume that 
+there is at least one house associated with every intersection. There may be more than one ﬁre station per 
+intersection.
+
+*/
+
+// algo_FireStation.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include<iostream>
+#include<stdio.h>
+#include<conio.h>
+#include<limits.h>
+using namespace std;
+
+
+
+
+
+
+
+struct Lqueue
+{
+	int items[500];
+	int front;
+	int rear;
+};
+
+void enqueue(Lqueue *l,int thing)
+{
+	if(l->rear==499)
+		cout<<"The Queue is Full!";
+	else
+	{
+		l->rear++;
+		l->items[l->rear]=thing;
+	}
+}
+
+
+int dequeue(Lqueue *l) // the method for inserting an element into the queue
+{
+	if(l->front>l->rear)
+	{
+		cout<<"The queue is empty!";
+		return NULL;
+	}
+	else 
+	{
+		int x=l->items[l->front];
+		l->front++;
+		return x;
+	}
+}
+
+
+
+int FindMinDistance(int distance[6], bool visited[6])
+{
+	int index=-1;
+	int min=90000;
+
+	for(int i=1;i<6;i++)
+	{
+		if(visited[i]==false)
+		{
+			if(distance[i]<min)
+			{
+				min=distance[i];
+				index=i;
+			}
+		}
+	}
+	
+	return index;
+}
+
+int FindMinDistanceFS(int distance[6], bool visited[6], bool IsFireStationConstructed[6])
+{
+	int index=-1;
+	int min=90000;
+
+	for(int i=1;i<6;i++)
+	{
+		if(visited[i]==false && IsFireStationConstructed[i]==false)
+		{
+			if(distance[i]<min)
+			{
+				min=distance[i];
+				index=i;
+			}
+		}
+	}
+
+	return index;
+}
+
+
+void MemCopy(int tempdistance[6],int distance[6])
+{
+	for(int i=1;i<6;i++)
+		tempdistance[i]=distance[i];
+
+}
+
+int FindMaxAndReturnIndex(int tempdistance[6], bool IsFireStationConstructed[6])
+{
+	int max=-1;
+	int index=-1;
+	for(int i=1;i<6;i++)
+	{
+		if(IsFireStationConstructed[i]==false)
+		{
+
+		
+		if(tempdistance[i]>max)
+		{
+			max=tempdistance[i];
+			index=i;
+		}
+		}
+	}
+	return index;
+}
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	Lqueue q;
+	q.front=0;
+	q.rear=-1;
+	
+	bool IsFireStationConstructed[6];
+	for(int w=1;w<6;w++)
+		IsFireStationConstructed[w]=false;
+
+
+
+	
+	int E[6][6];
+
+	for(int i=1;i<6;i++)
+		for(int j=1;j<6;j++)
+			E[i][j]=1234567;
+
+
+	// Hard Coded adjacency matrix, just for checking the solution
+
+	E[1][2]=10;
+	E[2][1]=10;
+	E[2][3]=10;
+	E[2][4]=10;
+	E[2][5]=10;
+	E[3][2]=10;
+	E[4][2]=10;
+	E[5][2]=10;
+
+
+
+
+
+	int stations[]={1,2};
+	// The Fire Station is at vertex 1.
+
+
+	// Array that tells us at what distance is the nearest fire station for a given vertex.
+	int distance[6];
+	for(int h=1;h<6;h++)
+	{
+		distance[h]=1234567;
+	}
+
+
+for(int u=0;u<2;u++)
+{
+
+	bool visited[6];
+	int index;
+	
+	for(int k=1;k<6;k++)
+	{
+		
+		visited[k]=false;
+	}
+	for(int r=0;r<u;r++)
+		visited[stations[r]]=true;
+	
+	// Since the fire station is at node 
+	int c=stations[u];
+	
+	distance[c]=0;
+	visited[c]=true;
+
+	//update distance matrix
+	for(int i=1;i<=5;i++)
+	{
+		if(visited[i]==false)
+		{
+			
+			if(E[c][i]<distance[i])
+			{
+				
+				distance[i]=E[c][i];
+			}
+		
+		}
+	}
+	
+	
+
+
+	// Main loop of Dijkstra's starts here
+	for(int i=1;i<=5;i++)
+	{
+		if(visited[i]==false)
+		{
+
+		
+		index=FindMinDistance(distance,visited);
+		
+		// mark that node as visited
+		visited[index]=true;
+
+		for(int j=1;j<6;j++)
+		{
+			
+			if(visited[j]==false)
+			{
+					
+					if(distance[j]>distance[index]+E[index][j])
+					{
+						distance[j]=distance[index]+E[index][j];
+					}
+				
+			}
+		}
+
+	
+		}
+	}
+	
+}
+
+	for(int r=1;r<6;r++)
+		cout<<distance[r]<<"\t";
+
+	_getch();
+
+	// you have to now construct a fire station ( For simplicity, say one)
+
+	int max=1234567;
+	int RequiredIndex=-1;
+	int tempdistance[6];
+	bool tempvisited[6];
+	int tempindex;
+	int aindex;
+
+
+	for(int t=1;t<6;t++)
+	{
+		
+
+		if(IsFireStationConstructed[t]==false)
+		{
+			MemCopy(tempdistance,distance);
+
+			for(int j=1;j<6;j++)
+				tempvisited[j]=false;
+			
+
+			tempvisited[t]=true;
+			tempdistance[t]=0;
+
+
+			// update tempdistance matrix here..
+
+			for(int j=1;j<6;j++)
+			{
+				if(tempvisited[j]==false && IsFireStationConstructed[j]==false)
+				{
+					
+					if(tempdistance[j]>tempdistance[t]+E[t][j])
+					{
+						
+						tempdistance[j]=tempdistance[t]+E[t][j];
+					}
+
+				}
+			}
+
+
+
+
+
+
+
+			for(int i=1;i<6;i++)
+			{
+				if(IsFireStationConstructed[i]!=true)
+				{
+
+				
+
+					if(tempvisited[i]==false)
+					{
+
+						tempindex=FindMinDistanceFS(tempdistance,tempvisited,IsFireStationConstructed);
+						
+						// mark that node as visited
+						tempvisited[tempindex]=true;
+						
+						// update tempdistance matrix
+						for(int j=1;j<6;j++)
+						{
+							if(tempvisited[j]==false && IsFireStationConstructed[j]==false)
+							{
+								
+								if(tempdistance[j]>tempdistance[tempindex]+E[tempindex][j])
+								{
+									
+									tempdistance[j]=tempdistance[tempindex]+E[tempindex][j];
+								}
+
+							}
+						}
+					}
+				}
+			}
+			
+		for(int z=1;z<6;z++)
+		{
+			cout<<tempdistance[z]<<"\t";
+		}
+		_getch();
+
+		
+			aindex=FindMaxAndReturnIndex(tempdistance,IsFireStationConstructed);
+			
+			if(max>tempdistance[aindex])
+			{
+			RequiredIndex=aindex;
+			
+			max=tempdistance[aindex];
+			}
+
+			_flushall();
+		
+
+		}
+	}
+
+	cout<<"FireStation will be constructed at:  "<<RequiredIndex;
+
+
+
+
+
+	return 0;
+}
+
+
+
