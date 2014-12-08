@@ -1,0 +1,161 @@
+// DS_MergeTwoLL.cpp : Defines the entry point for the console application.
+// Merge two linked lists together
+
+#include "stdafx.h"
+#include<iostream>
+#include<stdio.h>
+#include<conio.h>
+#include<time.h>
+using namespace std;
+
+
+struct node
+{
+	int data;
+	node *link;
+};
+node *head1=NULL;   //  the two heads for the two linked lists
+node *head2=NULL;
+node *head=NULL; // the head for the new list
+
+void InsertNodeAtEnd(node *&head, int thing)
+{
+	node *p;
+	p=new node;
+	p->data=thing;
+	if(head==NULL)
+	{
+		head=p;
+		p->link=NULL;
+	}
+	else
+	{
+		node *temp=head;
+
+		while(temp->link!=NULL)
+		{
+			temp=temp->link;
+		}
+		temp->link=p;
+		p->link=NULL;
+
+	}
+
+}
+
+void ShowLinkedList(node *head)
+{
+	node *temp=head;
+
+	if(temp==NULL)
+		cout<<"Linked List Empty!";
+	while(temp->link!=NULL)
+	{
+		cout<<temp->data<<" --> ";
+		temp=temp->link;
+	}
+	cout<<temp->data;
+}
+
+void MergeTwoLists(node *head1,node *head2, node *&head)
+{
+	node *temp1=head1;
+	node *temp2=head2;
+
+
+	while(temp1!=NULL && temp2!=NULL)
+	{
+		if(temp1->data > temp2->data)
+		{
+			InsertNodeAtEnd(head,temp2->data);
+			temp2=temp2->link;
+		}
+		else
+		{
+			InsertNodeAtEnd(head,temp1->data);
+			temp1=temp1->link;
+		}
+	}
+	if(temp1!=NULL)
+	{
+		while(temp1!=NULL)
+		{
+			InsertNodeAtEnd(head,temp1->data);
+			temp1=temp1->link;
+		}
+	}
+	else if(temp2!=NULL)
+	{
+		while(temp2!=NULL)
+		{
+			InsertNodeAtEnd(head,temp2->data);
+			temp2=temp2->link;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+
+	char choice='y';
+	int data;
+
+	while(choice=='y' || choice=='Y')
+	{
+		cout<<"What element you want to insert in the first list? ";
+		cin>>data;
+		InsertNodeAtEnd(head1,data);
+		cout<<"Insert Successful. Want to enter more? (y/n): ";
+		cin>>choice;
+
+	}
+
+	char choice2='y';
+	int data2;
+
+	while(choice2=='y' || choice2=='Y')
+	{
+		cout<<"What element you want to insert in the list? ";
+		cin>>data2;
+		InsertNodeAtEnd(head2,data2);
+		cout<<"Insert Successful. Want to enter more? (y/n): ";
+		cin>>choice2;
+
+	}
+
+
+
+	system("cls");
+	cout<<"The first list looks like: "<<endl;
+	ShowLinkedList(head1);
+	cout<<endl;
+	cout<<endl;
+	cout<<"The second list looks like: "<<endl;
+	ShowLinkedList(head2);
+
+	
+
+	MergeTwoLists(head1,head2,head);
+
+	cout<<endl<<endl;
+	cout<<"After merging, the linked list looks like: "<<endl;
+	ShowLinkedList(head);
+
+
+
+
+
+
+	_getch();
+
+	return 0;
+}
+
