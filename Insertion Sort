@@ -1,0 +1,67 @@
+// InsertionSort.cpp : Defines the entry point for the console application.
+// Time Analysis of Insertion Sort
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<iostream>
+#include<conio.h>
+#include<limits>
+#include<time.h>
+#include<fstream>
+using namespace std;
+
+void InsertionSort(int master[100001],int n)
+{
+	
+	int j;
+	int other;
+	for(int i=2;i<n;i++)
+	{
+		int temp=master[i];
+		for(int p=i-1;p>=0;p--)
+		{
+			if(master[p]>temp)
+			{
+				master[p+1]=master[p];
+			}
+			else
+			{
+				other=p+1;
+				break;
+			}
+		}
+		master[other]=temp;
+	}
+} // end of function
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	int MyArray[100001];
+	MyArray[0]=numeric_limits<int>::lowest();
+	ofstream MyFile;
+	MyFile.open("insertion.txt");
+	
+	for(int j=4500;j<100001;j+=4500)
+	{
+
+	for(int i=1;i<=j;i++)
+	{
+		MyArray[i]=rand()%j;
+	}
+	clock_t start,end;
+	start=clock();
+
+	InsertionSort(MyArray,j);
+	end=clock();
+
+	MyFile<<j<<","<<(double)(end-start)/CLK_TCK<<endl;
+	
+	}
+	_getch();
+
+
+	return 0;
+}
+
