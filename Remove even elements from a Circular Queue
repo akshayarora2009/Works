@@ -1,0 +1,160 @@
+// DS_RemoveFromCircular.cpp : Defines the entry point for the console application.
+// Remove even elements from a circular queue
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+
+struct node
+{
+	int data;
+	node *link;
+};
+
+node *head=NULL;
+
+
+void InsertNodeAtEnd(node *&head,int thing)
+{
+	node *p;
+	p=new node;
+	p->data=thing;
+
+	node *temp=head;
+
+	if(temp==NULL)
+	{
+		head=p;
+		p->link=head;
+	}
+	else
+	{
+		while(temp->link!=head)
+		{
+			temp=temp->link;
+		}
+		temp->link=p;
+		p->link=head;
+	}
+}
+
+void ShowCircularLL(node *head)
+{
+	node *temp=head;
+	if(temp==NULL)
+	{
+		cout<<"Linked List is empty. ";
+		return;
+	}
+	while(temp->link!=head)
+	{
+		cout<<temp->data<<" -> ";
+		temp=temp->link;
+	}
+	cout<<temp->data;
+
+}
+
+
+void RemoveEvenNumbers(node *&head)
+{
+	node *temp=head;
+	node *prevtemp=head;
+	node *lastnode=head;
+	while(lastnode->link!=head)
+	{
+		lastnode=lastnode->link;
+	}
+
+	while(temp->link!=head)   //  loop that checks all but the last element to be even or not
+	{
+		if(temp->data%2==0)
+		{
+			if(temp==head)
+			{
+				if(temp->link==head)
+				{
+					
+					free(temp);
+					head=NULL;
+					break;
+				}
+				head=temp->link;
+				lastnode->link=head;
+				free(temp);
+				temp=head;
+				prevtemp=head;
+				continue;
+			}
+			else
+			{
+				prevtemp->link=temp->link;
+				free(temp);
+				temp=prevtemp->link;
+			}
+
+
+
+
+
+
+		}
+		else
+		{
+			prevtemp=temp;
+			temp=temp->link;
+		}
+	}
+	
+	if(temp->data%2==0)
+	{
+		prevtemp->link=head;
+		free(temp);
+	}
+	
+}
+
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+
+
+	char choice='y';
+	int data;
+
+	while(choice=='y' || choice=='Y')
+	{
+		cout<<"What element you want to insert in the list? ";
+		cin>>data;
+		InsertNodeAtEnd(head,data);
+		cout<<"Insert Successful. Want to enter more? (y/n): ";
+		cin>>choice;
+
+	}
+	system("cls");
+	cout<<endl;
+	cout<<endl;
+	cout<<"Before removing, the list looks like: "<<endl;
+	ShowCircularLL(head);
+	cout<<endl<<endl;
+
+
+	RemoveEvenNumbers(head);
+	
+	cout<<"After removing the even elements, the list is: "<<endl;
+	ShowCircularLL(head);
+
+
+
+
+
+	_getch();
+	return 0;
+}
+
