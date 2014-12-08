@@ -1,0 +1,387 @@
+// DS_PolynomialRepresentationLL.cpp : Defines the entry point for the console application.
+// Representation of Polynomials using Linked Lists
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+
+struct node
+{
+	int coefficient;
+	int power;
+	node *link;
+};
+
+
+
+
+void InsertANewTerm(node *&poly,int coefficient,int power)
+{
+	node *p;
+	p= new node;
+	p->coefficient=coefficient;
+	p->power=power;
+
+	node *temp=poly;
+
+	if(temp==NULL)
+	{
+		poly=p;
+		p->link=NULL;
+	}
+	else
+	{
+		while(temp->link!=NULL)
+		{
+			temp=temp->link;
+		}
+		temp->link=p;
+		p->link=NULL;
+	}
+}
+
+
+
+void SortInDescendingOrderOfPower(node *poly)
+{
+	int n=0;
+	node *temp=poly;
+
+	while(temp!=NULL)
+	{
+		n++;
+		temp=temp->link;
+	}
+	
+	
+	// Using bubble sort
+	for(int i=0;i<n-1;i++)
+	{
+		temp=poly;
+
+		for(int j=0;j<n-i-1;j++)
+		{
+			if((temp->power) < (temp->link->power))
+			{
+				int storePower=temp->power;
+				int storeCoefficient=temp->coefficient;
+
+				temp->power=temp->link->power;
+				temp->coefficient=temp->link->coefficient;
+
+				temp->link->power=storePower;
+				temp->link->coefficient=storeCoefficient;
+			}
+			temp=temp->link;
+
+		}
+	}
+}
+// Combine different terms with same power
+
+void CombineSamePowers(node *&poly)
+{
+	node *temp=poly;
+	node *nexttemp;
+	node *tail;
+
+
+	while(temp->link!=NULL)
+	{
+		tail=temp;
+		nexttemp=temp->link;
+		while(nexttemp!=NULL)
+		{
+			if(temp->power == nexttemp->power)
+			{
+				temp->coefficient=temp->coefficient+nexttemp->coefficient;
+				tail->link=nexttemp->link;
+				delete nexttemp;
+				nexttemp=tail->link;
+				continue;
+			}
+			tail=tail->link;
+			nexttemp=nexttemp->link;
+
+		}
+		temp=temp->link;
+
+		if(temp==NULL)
+			break;
+	}
+
+
+}
+
+
+
+
+
+
+// Find a given power in a polynomial
+
+
+node* FindSimilarPower(node *poly,int power)
+{
+	node *temp=poly;
+	
+	while(temp!=NULL)
+	{
+		if(temp->power==power)
+		{
+			return temp;
+		}
+		temp=temp->link;
+	}
+	return NULL;
+}
+
+
+void Addition(node *poly1,node *poly2, node *&poly)
+{
+	node *temp1=poly1;
+	node *temp2=poly2;
+
+	while(temp1!=NULL)
+	{
+		int x=temp1->power;
+
+		node *p=FindSimilarPower(poly2,x); // find similar power in the other polynomial
+		if(p!=NULL)
+		{
+			InsertANewTerm(poly,(p->coefficient+temp1->coefficient),x);
+		}
+		else
+		{
+			InsertANewTerm(poly,temp1->coefficient,x);
+		}
+		temp1=temp1->link;
+	}
+	CombineSamePowers(poly);
+
+	while(temp2!=NULL)
+	{
+		int y=temp2->power;
+		node *q=FindSimilarPower(poly,y);
+		if(q!=NULL)
+		{
+			temp2=temp2->link;
+			continue;
+		}
+		else
+		{
+			InsertANewTerm(poly,temp2->coefficient,y);
+
+		}
+		temp2=temp2->link;
+	}
+
+}
+
+
+// multiply polynomial by a constant and store the result as another polynomial
+
+void MultiplyByConstant(node *poly,int number, node *poly1)
+{
+	node *temp=poly;
+
+	while(temp!=NULL)
+	{
+		temp->coefficient=number*(temp->coefficient);
+	}
+}
+		
+void MultiplyTwoPoly(node *poly1, node *poly2, node *&poly)
+{
+	
+
+
+	node *temp1=poly1;
+	node *temp2=poly2;
+
+	while(temp1!=NULL)
+	{
+		temp2=poly2;
+		while(temp2!=NULL)
+		{
+			InsertANewTerm(poly,(temp1->coefficient)*(temp2->coefficient),(temp1->power)+(temp2->power));
+			temp2=temp2->link;
+		}
+		temp1=temp1->link;
+	}
+
+
+	CombineSamePowers(poly);
+	SortInDescendingOrderOfPower(poly);
+
+
+}
+
+
+void ShowThePolynomial(node *poly)
+{
+	CombineSamePowers(poly);
+	SortInDescendingOrderOfPower(poly);
+	node *temp=poly;
+
+	if(temp==NULL)
+	{
+		cout<<"0";
+		return;
+	}
+	else
+	{
+		while(temp->link!=NULL)
+		{
+			cout<<temp->coefficient<<"x^("<<temp->power<<") + ";
+			temp=temp->link;
+		}
+		cout<<temp->coefficient<<"x^("<<temp->power<<")";
+	}
+}
+
+
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+label:
+	system("cls");
+	int choice;
+	node *poly1=NULL,*poly2=NULL,*poly=NULL;
+	int coeff1,coeff2,coeff;
+	int power1,power2,power;
+	cout<<"********MAIN MENU********\n";
+	cout<<"1. Add two polynomials.\n";
+	cout<<"2. Multiply two polynomials.\n";
+	cout<<"3. Just Represent a polynomial.\n";
+	cout<<"4. Exit.\n";
+	cout<<endl;
+	cout<<"Enter your choice(1-4): ";
+	cin>>choice;
+	char ch;
+
+	switch (choice)
+	{
+	case 1: system("cls"); 
+		
+		ch='y';
+		cout<<"First Polynomial (Enter term-wise): \n";
+		while(ch=='y')
+		{
+			cout<<"Enter the coefficient: ";
+			cin>>coeff1;
+			cout<<"Enter the power: ";
+			cin>>power1;
+			InsertANewTerm(poly1,coeff1,power1);
+			cout<<endl<<"Want to enter another term? ";
+			cin>>ch;
+
+		}
+		cout<<endl<<"First polynomial successfully created. \n";
+		cout<<endl<<"Second polynomial (Enter term-wise): ";
+
+		ch='y';
+
+		while(ch=='y')
+		{
+			cout<<"Enter the coefficient: ";
+			cin>>coeff2;
+			cout<<"Enter the power: ";
+			cin>>power2;
+			InsertANewTerm(poly2,coeff2,power2);
+			cout<<endl<<"Want to enter another term? ";
+			cin>>ch;
+		}
+		Addition(poly1,poly2,poly);
+		cout<<"After adding the two polynomials, result is: \n";
+		ShowThePolynomial(poly);
+		cout<<"Press enter to go to the main menu. ";
+		_getch();
+		goto label;
+
+
+	case 2: 
+		system("cls"); 
+		 ch='y';
+
+		cout<<"First Polynomial (Enter term-wise): \n";
+		while(ch=='y')
+		{
+			cout<<"Enter the coefficient: ";
+			cin>>coeff1;
+			cout<<"Enter the power: ";
+			cin>>power1;
+			InsertANewTerm(poly1,coeff1,power1);
+			cout<<endl<<"Want to enter another term? ";
+			cin>>ch;
+
+		}
+		cout<<endl<<"First polynomial successfully created. \n";
+		cout<<endl<<"Second polynomial (Enter term-wise): ";
+
+		ch='y';
+
+		while(ch=='y')
+		{
+			cout<<"Enter the coefficient: ";
+			cin>>coeff2;
+			cout<<"Enter the power: ";
+			cin>>power2;
+			InsertANewTerm(poly2,coeff2,power2);
+			cout<<endl<<"Want to enter another term? ";
+			cin>>ch;
+		}
+		MultiplyTwoPoly(poly1,poly2,poly);
+		cout<<"After multiplying the two polynomials, result is:\n ";
+		ShowThePolynomial(poly);
+		cout<<"Press enter to go to the main menu. ";
+		_getch();
+		goto label;
+
+	case 3:
+
+		system("cls"); 
+		 ch='y';
+		cout<<"Polynomial (Enter term-wise): \n";
+		while(ch=='y')
+		{
+			cout<<"Enter the coefficient: ";
+			cin>>coeff1;
+			cout<<"Enter the power: ";
+			cin>>power1;
+			InsertANewTerm(poly1,coeff1,power1);
+			cout<<endl<<"Want to enter another term? ";
+			cin>>ch;
+
+		}
+		cout<<endl<<"The polynomial you have entered is: ";
+		
+		ShowThePolynomial(poly1);
+
+		cout<<endl<<"Press enter to go to the main menu.";
+		_getch();
+		goto label;
+
+	case 4:
+		exit(0);
+
+
+	default:
+		break;
+	}
+
+
+
+
+
+
+	_getch();
+	return 0;
+}
+
