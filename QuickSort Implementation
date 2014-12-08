@@ -1,0 +1,122 @@
+// algo_QuickSort.cpp : Defines the entry point for the console application.
+// Time Analysis of QuickSort Implementation
+// Randomly fill up an array 'n' number of times and sort it, record the time and plot a graph for different 'n'
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<iostream>
+#include<conio.h>
+#include<limits.h>
+#include<time.h>
+#include<fstream>
+using namespace std;
+
+
+
+int Partition(int master[100001],int beg,int end)
+{
+	
+	int pivot=master[beg];
+	int i=beg+1,j=end;
+	do
+	{
+		while(i<end)
+		{
+			
+			if(master[i]>pivot)
+				break;
+			i++;
+
+		}
+
+		while(j>beg)
+		{
+			
+			if(master[j]<pivot)
+				break;
+			j--;
+		}
+	
+		if(i<j)
+		{
+			int temp=master[i];
+			master[i]=master[j];
+			master[j]=temp;
+
+		}
+
+		
+	}while(i<j);
+	
+	
+	if(i>=j)
+	{
+		int temp2=master[j];
+		master[j]=pivot;
+		master[beg]=temp2;
+		
+		return j;
+	}
+}
+
+
+void QuickSort(int master[100001],int beg,int end)
+{
+	
+	if(beg<end)
+	{
+		int flag=Partition(master,beg,end);
+
+		QuickSort(master,beg,flag);
+		QuickSort(master,flag+1,end);
+	}
+}
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	int A[100001];
+	clock_t start,end;
+
+	ofstream MyFile;
+	MyFile.open("QSort_av.txt");
+	
+
+	
+
+	
+	for(int i=4500;i<100001;i+=4500)
+	{
+		
+		start=clock();
+		for(int e=0;e<100;e++)
+		{
+
+		for(int j=0;j<i;j++)
+		{
+			A[j]=rand()%i;
+		}
+		
+		A[i]=numeric_limits<int>::max();
+		
+
+		
+		
+
+		
+		QuickSort(A,0,i);
+		
+		}
+		end=clock();
+
+		MyFile<<i<<","<<(double)(end-start)/CLK_TCK<<endl;
+	}
+	
+
+
+
+	return 0;
+}
+
