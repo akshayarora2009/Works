@@ -1,0 +1,62 @@
+// Algo_MaxMinBruteForce.cpp : Defines the entry point for the console application.
+// Time analysis of finding Max Min in a given array using the Brute Force Strategy
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<iostream>
+#include<conio.h>
+#include<time.h>
+#include<fstream>
+using namespace std;
+
+
+void MaxMin(int A[100001],int i,int j,int &max,int &min)
+{
+	for(int k=1;k<j;k++)
+		{
+			if(A[k]>max)
+				max=A[k];
+			if(A[k]<min)
+				min=A[k];
+		}
+}
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	int max, min;
+	int A[100001];
+	ofstream MyFile;
+	MyFile.open("MaxMinBrute.txt");
+
+
+	for(int i=4500;i<=100000;i+=4500)
+	{
+		clock_t start,end;
+		int j;
+		//start populating the array
+		for(j=0;j<=i;j++)
+		{
+			A[j]=rand()%i;
+		}
+
+		max=min=A[0];
+		//start max min
+		start=clock();
+		for(int my=0;my<10000;my++)
+		{
+			MaxMin(A,i,j,max,min);
+		}
+		end=clock();
+		
+		cout<<i<<","<<(double)(end-start)/CLK_TCK<<endl;
+	}
+	
+
+
+
+
+
+	return 0;
+}
+
