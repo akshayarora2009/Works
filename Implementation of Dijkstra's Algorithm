@@ -1,0 +1,176 @@
+// algo_Dijkstra's.cpp : Defines the entry point for the console application.
+// Implementation of Dijkstra's Algorithm
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+using namespace std;
+
+int FindMinDistance(int distance[200], bool visited[200])
+{
+	int index=-1;
+	int min=90000;
+
+	for(int i=1;i<6;i++)
+	{
+		if(visited[i]==false)
+		{
+			if(distance[i]<min)
+			{
+				min=distance[i];
+				index=i;
+			}
+		}
+	}
+
+	return index;
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	// no. of nodes
+	int n;
+
+	// Adjacency matrix
+	int E[200][200];
+
+
+	cout<<"Enter the number of nodes(max 200): ";
+	cin>>n;
+
+	char isDirected;
+	cout<<"Do you want to make all the edges directed? (y/n)";
+	cin>>isDirected;
+
+	// Initialize adjacency matrix
+
+	for(int i=0;i<200;i++)
+		for(int j=0;j<200;j++)
+			E[i][j]=12345678;
+
+
+	// Initialize distance matrix
+	int distance[200];
+	for(int i=0;i<200;i++)
+		distance[i]=12345678;
+
+
+
+
+
+
+	char ch='y';
+	cout<<"Start making connections. \n";
+
+	int source;
+	int destination;
+	int weight;
+	while(ch=='y')
+	{
+		cout<<"Enter the source: ";
+		cin>>source;
+
+		cout<<"Enter the destination: ";
+		cin>>destination;
+
+		cout<<"Enter the edge weight: ";
+		cin>>weight;
+		
+
+		E[source][destination]=weight;
+
+		if(isDirected!='y' || isDirected!='Y')
+		{
+			E[destination][source]=weight;
+		}
+
+		cout<<"Want to create another node? (y/n)";
+		cin>>ch;
+	}
+
+	int c;
+
+	cout<<"What node is to be made the source node? ";
+	cin>>c;
+
+
+
+
+	bool visited[200];
+	int index;
+
+	for(int k=1;k<200;k++)
+	{
+		visited[k]=false;
+	}
+
+
+
+	distance[c]=0;
+	visited[c]=true;
+
+	//update distance matrix
+	for(int i=1;i<=n;i++)
+	{
+		if(visited[i]==false)
+		{
+			
+			if(E[c][i]<distance[i])
+			{
+				
+				distance[i]=E[c][i];
+			}
+
+		}
+	}
+
+
+
+
+	// Main loop of Dijkstra's starts here
+	for(int i=1;i<=n;i++)
+	{
+		if(visited[i]==false)
+		{
+
+
+			index=FindMinDistance(distance,visited);
+			
+			visited[index]=true;
+
+			for(int j=1;j<6;j++)
+			{
+				
+				if(visited[j]==false)
+				{
+					
+					if(distance[j]>distance[index]+E[index][j])
+					{
+						distance[j]=distance[index]+E[index][j];
+					}
+
+				}
+			}
+
+
+		}
+	}
+
+	for(int r=1;r<=n;r++)
+		cout<<endl<<"\nDistance of "<<r<<"from "<<c<<" is: "<<distance[r]<<endl;
+
+
+
+
+
+
+
+
+
+
+
+
+	return 0;
+}
+
