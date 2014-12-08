@@ -1,0 +1,100 @@
+// Algo_MaxMinDC.cpp : Defines the entry point for the console application.
+// Time Analysis of finding Max Min in an array using Divide and Conquer strategy
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+#include<time.h>
+#include<fstream>
+
+using namespace std;
+
+int max1=-1,min1=-1;;
+
+void MaxMin(int A[100001],int beg,int end, int &max,int &min)
+{
+	
+	
+	if(beg==end)
+	{
+		max=min=A[beg];
+		
+	}
+	else if(end==beg+1)
+	{
+		
+		if(A[end]>A[beg])
+		{
+			max=A[end];
+			min=A[beg];
+			
+		}
+		else
+		{
+			max=A[beg];
+			min=A[end];
+			
+		}
+	}
+	else
+	{
+		
+		int mid=(beg+end)/2;
+
+		MaxMin(A,beg,mid,max,min);
+		MaxMin(A,mid+1,end,max1,min1);
+
+		if(max<max1)
+			max=max1;
+		if(min>min1)
+			min=min1;
+
+		
+
+	}
+
+	
+	
+}
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	
+
+	int A[100001];
+	ofstream MyFile;
+	MyFile.open("DC_2.txt");
+
+	srand(time(NULL));
+	clock_t start,end;
+
+
+	for(int i=4500;i<100001;i+=4500)
+	{
+		int max=-1,min=-1;
+		// array is populated here
+		for(int j=0;j<=i;j++)
+		{
+			A[j]=rand()%i;
+		}
+		
+		start=clock();
+		for(int k=0;k<10000;k++)
+		{
+			
+		MaxMin(A,0,i,max,min);
+		}
+		end=clock();
+
+
+		MyFile<<i<<","<<(double)(end-start)/CLK_TCK<<endl;
+
+
+
+
+	}
+	return 0;
+}
+
