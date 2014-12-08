@@ -1,0 +1,398 @@
+// DS_SparseMatrix.cpp : Defines the entry point for the console application.
+// Representing a sparse matrix using Linked Lists
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+using namespace std;
+
+
+struct DataNode
+{
+	int RowNo;
+	int ColNo;
+	int data;
+
+	DataNode *NextDown;
+	DataNode *NextForward;
+
+
+};
+
+struct RowHead
+{
+	int RowNo;
+	RowHead *NextDown;
+	DataNode *NextForward;
+
+};
+
+struct ColHead
+{
+	int ColNo;
+	
+	DataNode *NextDown;
+	ColHead *NextForward;
+};
+
+struct MasterNode
+{
+	int Rows;
+	int Cols;
+
+	RowHead *NextDown;
+	ColHead *NextForward;
+};
+
+void InsertNode(MasterNode *M,int whatRow, int whatCol, int thing)
+{
+	// Wire up D
+
+	DataNode *D= new DataNode;
+	D->RowNo=whatRow;
+	D->ColNo=whatCol;
+	D->data=thing;
+	D->NextDown=NULL;
+	D->NextForward=NULL;
+
+
+	int MaxRow=M->Rows;
+	int MaxCol=M->Cols;
+
+	if(MaxRow < whatRow)
+	{
+		M->Rows=whatRow;
+	}
+	if(MaxCol < whatCol)
+	{
+		M->Cols=whatCol;
+	}
+
+
+	// ********** Find Appropriate Column **************
+	ColHead *tempc1=M->NextForward;
+	ColHead *tempctail=NULL;
+
+	// No column head exists
+	if(tempc1==NULL)
+	{
+		ColHead *C=new ColHead;
+		C->ColNo=whatCol;
+		C->NextDown=D;
+		C->NextForward=NULL;
+		M->NextForward=C;
+		//M->Cols=whatCol;
+		//M->Rows=whatRow;
+
+		// No ColHead implies No RowHead
+		RowHead *R=new RowHead;
+		R->RowNo=whatRow;
+		R->NextForward=D;
+		M->NextDown=R;
+		M->Rows=whatRow;
+		R->NextDown=NULL;
+		// we are done with inserting first node
+		
+	}
+	// One or more column head exists
+	else
+	{
+		while(tempc1!=NULL && tempc1->ColNo < whatCol)
+		{
+			tempctail=tempc1;
+			tempc1=tempc1->NextForward;
+		}
+		if(tempc1!=NULL && tempc1->ColNo==whatCol )
+		{
+			// no need to make a new colHead
+			// just scan and find appropriate position based on Row number
+
+			DataNode *tempd1=tempc1->NextDown;
+			DataNode *tempdtail=NULL;
+
+			while( tempd1!=NULL && tempd1->RowNo < whatRow)
+			{
+				tempdtail=tempd1;
+				tempd1=tempd1->NextDown;
+
+			}
+			if(tempdtail==NULL)
+			{
+				tempc1->NextDown=D;
+				D->NextDown=tempd1;
+			}
+			else
+			{
+				tempdtail->NextDown=D;
+				D->NextDown=tempd1;
+			}
+
+			// Now Link with the rows as well
+			// If a colhead exists, does not mean that RowHead would exist as well
+			// just apply same here
+
+			RowHead *tempr1=M->NextDown;
+			RowHead *temprtail=NULL;
+
+			while(tempr1->RowNo < whatRow && tempr1!=NULL)
+			{
+				temprtail=tempr1;
+				tempr1=tempr1->NextDown;
+			}
+
+			if(tempr1!=NULL && tempr1->RowNo == whatRow)
+			{
+				// no need to create a new row head, just connect it to node and we are done
+				DataNode *d2=tempr1->NextForward;
+				DataNode *d2tail=NULL;
+
+				while(d2!=NULL && d2->ColNo < whatCol)
+				{
+					d2tail=d2;
+					d2=d2->NextForward;
+				}
+
+				if(d2tail==NULL)
+				{
+					tempr1->NextForward=D;
+					D->NextForward=d2;
+				}
+				else
+				{
+					d2tail->NextForward=D;
+					D->NextForward=d2;
+				}
+
+
+
+			}
+			else
+			{
+				// create a new row head
+				RowHead *r=new RowHead;
+				r->RowNo=whatRow;
+				r->NextForward=D;
+				if(temprtail==NULL)
+				{
+					M->NextDown=r;
+					r->NextDown=tempr1;
+				}
+				else
+				{
+					temprtail->NextDown=r;
+					r->NextDown=tempr1;
+				}
+			}
+
+			
+
+	}
+
+
+
+		else
+		{
+			// Create a new Column Head
+			ColHead *c=new ColHead;
+			
+			// place col head in the right place
+			if(tempctail==NULL)
+			{
+				M->NextForward=c;
+				c->NextForward=tempc1;
+			}
+			else
+			{
+				tempctail->NextForward=c;
+				c->NextForward=tempc1;
+			}
+			// attach it to D
+
+			c->NextDown=D;
+
+			// start finding an appropriate row head to point at D
+
+			RowHead *tempr1=M->NextDown;
+			RowHead *temprtail=NULL;
+
+			while(  tempr1!=NULL && tempr1->RowNo < whatRow )
+			{
+				temprtail=tempr1;
+				tempr1=tempr1->NextDown;
+			}
+
+			if(tempr1!=NULL && tempr1->RowNo == whatRow)
+			{
+				// no need to create a new row head, just connect it to node and we are done
+				DataNode *d2=tempr1->NextForward;
+				DataNode *d2tail=NULL;
+
+				while(d2!=NULL && d2->ColNo < whatCol)
+				{
+					d2tail=d2;
+					d2=d2->NextForward;
+				}
+
+				if(d2tail==NULL)
+				{
+					tempr1->NextForward=D;
+					D->NextForward=d2;
+				}
+				else
+				{
+					d2tail->NextForward=D;
+					D->NextForward=d2;
+				}
+
+
+
+			}
+			else
+			{
+				// create a new row head
+				RowHead *r=new RowHead;
+				r->RowNo=whatRow;
+				r->NextForward=D;
+				if(temprtail==NULL)
+				{
+					M->NextDown=r;
+					r->NextDown=tempr1;
+				}
+				else
+				{
+					temprtail->NextDown=r;
+					r->NextDown=tempr1;
+				}
+			}
+
+
+
+
+
+
+
+
+
+
+
+		}
+
+	}
+
+		//cout<<"Insert succeeded.";
+}
+
+
+void Display(MasterNode *M)
+{
+	RowHead *temprow=M->NextDown;
+	ColHead *tempcol=M->NextForward;
+
+	int rows=0;
+	int cols=0;
+
+
+
+	while(temprow!=NULL)
+	{
+		DataNode *dtemp=temprow->NextForward;
+		
+		if(rows<temprow->RowNo)
+		{
+			while(rows!=temprow->RowNo)
+			{
+				cols=0;
+				while(cols<=M->Cols)
+				{
+					cout<<"0\t";
+					cols++;
+				}
+				cout<<endl;
+				rows++;
+			}
+		}
+
+		cols=0;
+		while(dtemp!=NULL || cols<=M->Cols)
+		{
+			//cout<<"Element found at Row: "<<dtemp->RowNo+1<<" Col : "<<dtemp->ColNo+1<<" with value: "<<dtemp->data<<endl;
+
+
+			if(dtemp!=NULL)
+			{
+
+				while(cols < dtemp->ColNo)
+				{
+					cout<<"0\t";
+					cols++;
+				}
+			
+				cout<<dtemp->data<<"\t";
+				cols++;
+
+				dtemp=dtemp->NextForward;
+			}
+			else
+			{
+				while(cols <= M->Cols)
+				{
+					cout<<"0\t";
+					cols++;
+				}
+			}
+			
+		}
+		temprow=temprow->NextDown;
+		rows++;
+		cout<<endl;
+		cols=0;
+
+	}
+
+}
+
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	MasterNode M;
+	M.Cols=0;
+	M.Rows=0;
+	M.NextDown=NULL;
+	M.NextForward=NULL;
+g:
+
+	char choice='y';
+	int row,col,data;
+	cout<<"Sparse Matrix (indexing starts at 0): \n\n";
+
+	while(choice=='y')
+	{
+		cout<<"Enter the row number: ";
+		cin>>row;
+		cout<<endl<<"Enter the column number: ";
+		cin>>col;
+		cout<<endl<<"Enter the data you want to insert: ";
+		cin>>data;
+		InsertNode(&M,row,col,data);
+
+		cout<<endl<<"Want to enter more data? (y/n): ";
+		cin>>choice;
+	}
+	
+	cout<<"The matrix is: \n\n";
+	Display(&M);
+
+	int y=0;
+	cout<<"Press 1 if you want to enter more..";
+	cin>>y;
+	if(y==1)
+		goto g;
+
+	_getch();
+	return 0;
+}
+
