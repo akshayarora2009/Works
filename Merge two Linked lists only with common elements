@@ -1,0 +1,162 @@
+// DS_MergeWithCommonElement.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include<iostream>
+#include<stdio.h>
+#include<conio.h>
+#include<time.h>
+using namespace std;
+
+
+struct node
+{
+	int data;
+	node *link;
+};
+node *head1=NULL;
+node *head2=NULL;
+node *head=NULL;
+
+
+void InsertNodeAtEnd(node *&head, int thing)
+{
+	node *p;
+	p=new node;
+	p->data=thing;
+	if(head==NULL)
+	{
+		head=p;
+		p->link=NULL;
+	}
+	else
+	{
+		node *temp=head;
+
+		while(temp->link!=NULL)
+		{
+			temp=temp->link;
+		}
+		temp->link=p;
+		p->link=NULL;
+
+	}
+
+}
+
+void ShowLinkedList(node *head)
+{
+	node *temp=head;
+
+	if(temp==NULL)
+		cout<<"Linked List Empty!";
+	while(temp->link!=NULL)
+	{
+		cout<<temp->data<<" -> ";
+		temp=temp->link;
+	}
+	cout<<temp->data;
+}
+
+node* Search(node *head,int thing)
+{
+	node *temp=head;
+	while(temp!=NULL)
+	{
+		if(temp->data==thing)
+			return temp;
+		temp=temp->link;
+	}
+	return NULL;
+}
+
+
+void MergeWithCommonElement(node *head1,node *head2, node *&head)
+{
+
+	node *temp1=head1;
+	node *temp2=head2;
+
+
+	while(temp1!=NULL)
+	{
+		int google=temp1->data;
+		node *results=Search(head2,google);
+		if(results!=NULL)
+		{
+			InsertNodeAtEnd(head,google);
+		}
+		temp1=temp1->link;
+	}
+}
+
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+
+	char choice='y';
+	int data;
+
+	while(choice=='y' || choice=='Y')
+	{
+		cout<<"What element you want to insert in the list? ";
+		cin>>data;
+		InsertNodeAtEnd(head1,data);
+		cout<<"Insert Successful. Want to enter more? (y/n): ";
+		cin>>choice;
+
+	}
+
+	char choice2='y';
+	int data2;
+
+	while(choice2=='y' || choice2=='Y')
+	{
+		cout<<"What element you want to insert in the list? ";
+		cin>>data2;
+		InsertNodeAtEnd(head2,data2);
+		cout<<"Insert Successful. Want to enter more? (y/n): ";
+		cin>>choice2;
+
+	}
+
+
+	
+
+	system("cls");
+	cout<<"The first list looks like: "<<endl;
+	ShowLinkedList(head1);
+
+	cout<<endl;
+	cout<<endl;
+
+
+	cout<<"The second list looks like: "<<endl;
+	ShowLinkedList(head2);
+	cout<<endl;
+
+	MergeWithCommonElement(head1,head2,head);
+
+	if(head!=NULL)
+	{
+
+	
+	cout<<endl<<"The list with common elements of both the lists are: "<<endl;
+
+	ShowLinkedList(head);
+	}
+	else
+	{
+		cout<<"No linked list exists with common elements!";
+
+	}
+
+
+	_getch();
+
+	return 0;
+}
+
