@@ -1,0 +1,113 @@
+// DS_CircularQueue.cpp : Defines the entry point for the console application.
+// Implement a Circular Queue
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+using namespace std;
+#define MAX_SIZE 500
+
+struct Cqueue
+{
+	int items[MAX_SIZE];
+	int front;
+	int rear;
+};
+
+
+void enqueue(Cqueue *c,int thing)
+{
+	if((c->rear+1)%MAX_SIZE==c->front)
+		cout<<"Queue full!";
+	if(c->front==-1)
+	{
+		
+		c->front++;
+		c->rear++;
+		c->items[c->rear]=thing;
+	}
+	else
+	{
+		c->rear=(c->rear+1)%MAX_SIZE;
+		c->items[c->rear]=thing;
+	}
+}
+
+int dequeue(Cqueue *c)
+{
+	int x;
+	if(c->rear==-1)
+	{
+		cout<<"Queue Empty!";
+		return NULL;
+	}
+	else
+	{
+		if(c->front==c->rear)
+		{
+			x=c->items[c->rear];
+			c->rear=-1;
+			c->front=0;
+			return x;
+		}
+		else
+		{
+			x=c->items[c->front];
+			c->front=(c->front+1)%MAX_SIZE;
+			return x;
+		}
+	}
+}
+
+void ShowStatus(Cqueue *c)
+{
+	for(int i=c->front;i<=c->rear;i=(i+1)%MAX_SIZE)
+	{
+		cout<<c->items[i]<<"--";
+	}
+}
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	Cqueue c;
+	c.front=-1;
+	c.rear=-1;
+	int thing;
+	x:
+	system("cls");
+	cout<<"*****Welcome to the queue (Aap kataar mein hain)******* \n\n";
+	cout<<"1. Enqueue an element. \n";
+	cout<<"2. Dequeue element. \n";
+	cout<<"3. Show Status. \n";
+	cout<<"4. Exit. \n";
+	cout<<"Enter your choice(1-4): ";
+	int choice;
+	cin>>choice;
+
+	switch(choice)
+	{
+	case 1: system("cls"); cout<<"Enter the element you want to enqueue. "; cin>>thing; enqueue(&c,thing); 
+		cout<<"Successfully enqueued! Press enter to return to the main menu. ";
+		_getch();
+		goto x;
+	case 2: system("cls"); cout<<"Element dequeued is: "<<dequeue(&c); 
+		cout<<"\nPress Enter to return to the main menu. ";
+		_getch();
+		goto x;
+	case 3: system("cls"); cout<<"The queue looks like: \n";
+		ShowStatus(&c); cout<<"\n\nPress enter to return to main menu."; 
+		_getch(); 
+		goto x;
+	case 4: exit(0);
+	default: cout<<"Invalid choice. Press enter to reset. ";
+		_getch();
+		goto x;
+	}
+
+
+	return 0;
+}
+
