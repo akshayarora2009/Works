@@ -1,0 +1,130 @@
+// Create a binary search tree (BST) out a given pre-order traversal
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+using namespace std;
+
+struct node
+{
+	int name;
+	int level;
+	node *LeftChild;
+	node *RightChild;
+};
+
+
+
+void MakeTree(node *root, int name)
+{
+	if(name<root->name)
+	{
+		if(root->LeftChild==NULL)
+		{
+			node *p=(node*)malloc(sizeof(node));
+			p->LeftChild=NULL;
+			p->RightChild=NULL;
+			p->name=name;
+			root->LeftChild=p;
+		}
+		else
+		{
+			MakeTree(root->LeftChild,name);
+
+		}
+
+
+	}
+	else
+	{
+		if(root->RightChild==NULL)
+		{
+			node *q=(node*)malloc(sizeof(node));
+			q->LeftChild=NULL;
+			q->RightChild=NULL;
+			q->name=name;
+			root->RightChild=q;
+		}
+		else
+		{
+			MakeTree(root->RightChild,name);
+
+		}
+
+
+
+	}
+
+
+
+
+
+}
+
+
+
+
+
+void Display(node *root)
+{
+	if(root==NULL)
+		return;
+
+	if(root->LeftChild!=NULL || root->RightChild!=NULL)
+	cout<<"Node: "<<root->name<<endl;
+	if(root->LeftChild!=NULL)
+	cout<<"LeftChild: "<<root->LeftChild->name<<"\t";
+	
+	if(root->RightChild!=NULL)
+	cout<<"RightChild: "<<root->RightChild->name<<"\t";
+
+	cout<<endl;
+	Display(root->LeftChild);
+	Display(root->RightChild);
+}
+
+
+
+
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	node R;
+	R.name=-1;
+	R.LeftChild=NULL;
+	R.RightChild=NULL;
+
+
+	int A[500];
+	int n;
+	cout<<"How many elements are there is preorder traversal? ";
+	cin>>n;
+	cout<<endl;
+	cout<<"Enter all the elements seperated by enter. ";
+
+	for(int i=0;i<n;i++)
+		cin>>A[i];
+
+	cout<<"Insert succeeded..";
+
+	//Insert a root node
+	R.name=A[0];
+	
+	for(int i=1;i<n;i++)
+	{
+		MakeTree(&R,A[i]);
+	}
+	
+
+	cout<<endl;
+	system("cls");
+	Display(&R);
+
+	_getch();
+	return 0;
+}
+
