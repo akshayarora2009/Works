@@ -1,0 +1,149 @@
+// DS_Josephus.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+
+using namespace std;
+
+
+struct Lqueue
+{
+	int items[500];
+	int front;
+	int rear;
+};
+
+void enqueue(Lqueue *l,int thing)
+{
+	if(l->rear==499)
+		cout<<"The Queue is Full!";
+	else
+	{
+		l->rear++;
+		l->items[l->rear]=thing;
+	}
+}
+
+
+int dequeue(Lqueue *l) // the method for inserting an element into the queue
+{
+	if(l->front>l->rear)
+	{
+		cout<<"The queue is empty!";
+		return NULL;
+	}
+	else 
+	{
+		int x=l->items[l->front];
+		l->front++;
+		return x;
+	}
+}
+
+void InitializeAll(Lqueue *q)
+{
+	for(int i=0;i<500;i++)
+	{
+		q->items[i]=-1;
+	}
+	
+}
+
+
+
+
+int WhoIsSafe(Lqueue *q,int n)
+{
+	int terminated=0;
+	int google=q->items[q->front];
+	
+	int pos=0;
+	
+	while(terminated!=n-1)
+	{
+		int howManyCounted=google;
+		
+		for(int i=pos;howManyCounted!=0;i=(i+1)%n) // to properly count
+		{
+			
+			if(i==q->rear)
+			{
+				for(int r=0;r<=q->rear;r++)
+				{
+					if(q->items[r]!=-1)
+					{
+						pos=r;
+						
+						break;
+					}
+				}
+			
+				
+				howManyCounted--;
+			}
+			else if(q->items[i+1]!=-1)
+			{
+				pos=i+1;
+				howManyCounted--;
+			}
+		}
+
+		google=q->items[pos];
+		q->items[pos]=-1;
+		terminated++;
+		
+	
+	}
+
+	for(int j=0;j<=q->rear;j++)
+	{
+		if(q->items[j]!=-1)
+			return q->items[j];
+	}
+}
+
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	Lqueue q;
+	q.front=0;
+	q.rear=-1;
+	InitializeAll(&q);
+	int numbers[500];
+	int i=0;
+	int n,temp;
+
+	cout<<"How many persons are to stand in the circle?";
+	cin>>n;
+
+	cout<<"Enter the values seperated by spaces: ";
+	while(i!=n)
+	{
+		cin>>temp;
+
+		numbers[i]=temp;
+		i++;
+	}
+	
+	for(int j=0;j<n;j++)
+		enqueue(&q,numbers[j]);
+
+	
+	cout<<endl<<endl;
+	cout<<"The person who wins the game is: "<<WhoIsSafe(&q,n)<<endl<<endl;
+	
+
+	_getch();
+
+
+	
+
+
+	return 0;
+}
+
