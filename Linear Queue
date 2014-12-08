@@ -1,0 +1,62 @@
+// DS_LinearQueue.cpp : Defines the entry point for the console application.
+// Implement a Linear Queue
+
+#include "stdafx.h"
+#include<stdio.h>
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+
+struct Lqueue
+{
+	int items[500];
+	int front;
+	int rear;
+};
+
+void enqueue(Lqueue *l,int thing)
+{
+	if(l->rear==499)
+		cout<<"The Queue is Full!";
+	else
+	{
+		l->rear++;
+		l->items[l->rear]=thing;
+	}
+}
+
+
+int dequeue(Lqueue *l) // the method for inserting an element into the queue
+{
+	if(l->front>l->rear)
+	{
+		cout<<"The queue is empty!";
+		return NULL;
+	}
+	else 
+	{
+		int x=l->items[l->front];
+		l->front++;
+		return x;
+	}
+}
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	Lqueue l;
+	l.front=0;
+	l.rear=-1;
+	cout<<dequeue(&l);
+	enqueue(&l,1);
+	enqueue(&l,8);
+	enqueue(&l,7);
+	enqueue(&l,5);
+
+	cout<<dequeue(&l);
+	_getch();
+	return 0;
+}
+
